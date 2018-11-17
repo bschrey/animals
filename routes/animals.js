@@ -51,4 +51,19 @@ router.put('/', async (req, res, next) => {
 	}
 });
 
+router.delete('/:id', async (req, res, next) => {
+    try {
+	  	let animal = await animals.destroy(req.params.id);
+	  	console.log(JSON.stringify(animal));
+	  	if(animal) {
+			res.status(200).send(JSON.stringify(animal));
+	  	} else {
+	  		res.status(400).send({"error": "not found"});
+	  	}
+	} catch(e) {
+		console.log(e);
+		res.status(500).send({"error": "server error"});
+	}
+});
+
 module.exports = router;

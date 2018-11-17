@@ -11,8 +11,4 @@ router.get('/api/version', (req, res, next) => {
   	res.status(200).send(pkg.version);
 });
 
-router.get('/hello/:name', (req, res, next) => {
-  	res.status(200).json({'hello': req.params.name});
-});
-
 module.exports = router;

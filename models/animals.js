@@ -28,7 +28,9 @@ exports.read = async function(id) {
 exports.destroy = async function(id) {
 	try {
 		if(animals[id]) {
+			let animal = animals[id];
 			delete animals[id];
+			return animal;
 		} else {
 			return null;
 		}
