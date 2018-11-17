@@ -2,25 +2,40 @@ const Animal = require('./Animal');
 
 let animals = [];
 
-exports.update = exports.create = async function(id, name, type) {
-	animals[id] = new Animal(id, name, type);
-	return animals[id];
+exports.update = exports.create = async function(id, name, type, weight, status) {
+	try {
+		animals[id] = new Animal(id, name, type, weight, status);
+		return animals[id];
+	} catch(e) {
+		console.log(e);
+		throw new Error(`Error creating Animal.`);
+	}
 };
 
 exports.read = async function(id) {
-	if(animals[id]) {
-		return animals[id];
-	} else {
-		throw new Error(`Animals ${id} does not exist.`);
+	try {
+		if(animals[id]) {
+			return animals[id];
+		} else {
+			return null;
+		}
+	} catch(e) {
+		console.log(e);
+		throw new Error(`Error reading Animals ${id}.`);
 	}
 };
 
 exports.destroy = async function(id) {
-	if(animals[id]) {
-		delete animals[id];
-	} else {
-		throw new Error(`Animals ${id} does not exist.`);
-	}
+	try {
+		if(animals[id]) {
+			delete animals[id];
+		} else {
+			return null;
+		}
+	} catch(e) {
+		console.log(e);
+		throw new Error(`Error destroying Animals ${id}.`);
+	} 
 }
 
 exports.idlist = async function() { return Object.keys(animals); };
