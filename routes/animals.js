@@ -6,7 +6,7 @@ const Animal = require('../models/Animal.js');
 /* GET users listing. */
 router.get('/', async (req, res, next) => {
     try {
-	  	let allAnimals = await animals.idlist();
+	  	let allAnimals = await animals.keylist();
 	  	res.status(200).json(JSON.stringify(allAnimals));
 	} catch(e) {
 		console.log(e);
@@ -14,9 +14,9 @@ router.get('/', async (req, res, next) => {
 	}
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:key', async (req, res, next) => {
     try {
-	  	let animal = await animals.read(req.params.id);
+	  	let animal = await animals.read(req.params.key);
 	  	console.log(JSON.stringify(animal));
 	  	if(animal) {
 			res.status(200).send(JSON.stringify(animal));
@@ -31,7 +31,7 @@ router.get('/:id', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
     try {
-		let animal = await animals.create(req.body.id, req.body.name, req.body.type, req.body.weight, req.body.status);
+		let animal = await animals.create(req.body.key, req.body.name, req.body.type, req.body.weight, req.body.status);
 		console.log(JSON.stringify(animal));
 		res.status(200).json(JSON.stringify(animal));
 	} catch(e) {
@@ -42,7 +42,7 @@ router.post('/', async (req, res, next) => {
 
 router.put('/', async (req, res, next) => {
     try {
-		let animal = await animals.update(req.body.id, req.body.name, req.body.type, req.body.weight, req.body.status);
+		let animal = await animals.update(req.body.key, req.body.name, req.body.type, req.body.weight, req.body.status);
 		console.log(JSON.stringify(animal));
 		res.status(200).json(JSON.stringify(animal));
 	} catch(e) {
@@ -51,9 +51,9 @@ router.put('/', async (req, res, next) => {
 	}
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:key', async (req, res, next) => {
     try {
-	  	let animal = await animals.destroy(req.params.id);
+	  	let animal = await animals.destroy(req.params.key);
 	  	console.log(JSON.stringify(animal));
 	  	if(animal) {
 			res.status(200).send(JSON.stringify(animal));
