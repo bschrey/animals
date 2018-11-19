@@ -1,93 +1,133 @@
-const fs = require('fs-extra');
-const path = require('path');
-const util = require('util');
-const Animal = require('./Animal');
-const mongodb = require('mongodb'); 
-const MongoClient = mongodb.MongoClient;
-const DBG = require('debug');
-const debug = DBG('notes:notes-mongodb'); 
-const error = DBG('notes:error-mongodb'); 
+const {ObjectID} = require('mongodb');
+const _ = require('lodash');
 
-var client;
+const {mongoose} = require('../db/mongoose');
+const {AnimalModel} = require('./animal-mongoose-model');
+const Animal = require("./Animal");
 
-async function connectDB() { 
-    if (!client) client = await MongoClient.connect(process.env.MONGO_URL);
-    return { 
-        db: client.db(process.env.MONGO_DBNAME), 
-        client: client
-    };
-}
+exports.create = function(key, name, type, weight, status) { 
+    return new Promise((resolve, reject) => {
+        try {
+            let animalModel = new AnimalModel({
+                name, name,
+                type: type,
+                weight: weight,
+                status: status
+            });
 
-exports.create = async function(key, name, type, weight, status) { 
-    const { db, client } = await connectDB();
-    const animal = new Animal(key, name, type, weight, status); 
-    const collection = db.collection('animals'); 
-    await collection.insertOne({ 
-        animalkey: key, name: name, type: type, weight: weight, status: status 
+            animalModel.save().then((doc) => {
+                console.log(doc);
+                let animal = new Animal(doc._id, doc.name, doc.type, doc.weight, doc.status);
+                console.log(animal);
+                resolve(animal);
+            }, (err) => {
+                console.log(e);
+                reject(`Error creating Animal.`);
+            });
+        } catch(e) {
+            console.log(e);
+            reject(`Error creating Animal.`);
+        }
     });
-    return animal;
-}
+};
  
-exports.update = async function(key, name, type, weight, status) {  
-    const { db, client } = await connectDB();
-    const animal = new Animal(key, name, type, weight, status); 
-    const collection = db.collection('animals'); 
-    await collection.updateOne({ animalkey: key }, 
-            { $set: { name: name, type: type, weight: weight, status: status } });
-    return animal;
-}
+exports.update = function(key, name, type, weight, status) {  
+    return new Promise((resolve, reject) => {
+        try {
+            if(!ObjectID.isValid(key)) {
+                console.log('Key not valid');
+                reject(`Key is not valid.`);
+            }   
 
-exports.read = async function(key) { 
-    const { db, client } = await connectDB();
-    const collection = db.collection('animals');
-    const doc = await collection.findOne({ animalkey: key });
-    if(doc) {
-        const animal = new Animal(doc.animalkey, doc.name, doc.type, doc.weight, doc.status);
-        return animal; 
-    } else {
-        return null;
-    }
-}
+            AnimalModel.findByIdAndUpdate(key,
+                {$set: {name: name, type: type, weight: weight, status: status }}, {new: true}).then((animal) => {
+                    if(!animal) {
+                        reject(`Animal not found with key ${key}.`);
+                    }
+                    resolve(animal);
+                }).catch((err) => {
+                    reject(`Error updating Animal.`);
+                });
 
-exports.destroy = async function(key) { 
-    const { db, client } = await connectDB();
-    const collection = db.collection('animals'); 
+        } catch(e) {
+            console.log(e);
+            reject(`Error creating Animal.`);
+        }
+    });
+};
 
-    const doc = await collection.findOne({ animalkey: key });
-    if(doc) {
-        await collection.findOneAndDelete({ animalkey: key });
-        const animal = new Animal(doc.animalkey, doc.name, doc.type, doc.weight, doc.status);
-        return animal; 
-    } else {
-        return null;
-    }
-}
+exports.read = function(key) { 
+    return new Promise((resolve, reject) => {
+        try {
+            if(!ObjectID.isValid(key)) {
+                console.log('Key not valid');
+                reject(`Error Animal key is invalid: ${key}.`);
+            }   
 
-exports.keylist = async function() { 
-    const { db, client } = await connectDB();
-    debug(`keylist ${util.inspect(db)}`);
-    const collection = db.collection('animals'); 
-    const keyz = await new Promise((resolve, reject) => { 
-        var keyz = []; 
-        collection.find({}).forEach( 
-            animal => { keyz.push(animal.animalkey); }, 
-            err  => { 
-                if (err) reject(err); 
-                else resolve(keyz); 
-            } 
-        ); 
-    }); 
-    return keyz;
-}
+            AnimalModel.findById(key).then((doc) => {
+                if(!doc) {
+                    console.log('Key not found');
+                    resolve(null);
+                }
 
-exports.count = async function() { 
-    const { db, client } = await connectDB();
-    const collection = db.collection('animals');
-    const count = await collection.count({});
-    return count;
-}
+                let animal = new Animal(doc._id, doc.name, doc.type, doc.weight, doc.status);
+                resolve(animal);
 
-exports.close = async function() {
-    if (client) client.close();
-    client = undefined;
-}
+            }).catch((err) => {
+                console.log(err)
+                reject(`Error reading Animal ${key}.`);
+            });
+
+        } catch(e) {
+            console.log(e);
+            reject(`Error reading Animal ${key}.`);
+        }
+    });
+};
+
+exports.destroy = function(key) { 
+    return new Promise((resolve, reject) => {
+        try {
+            if(!ObjectID.isValid(key)) {
+                console.log('Key not valid');
+                reject(`Key is not valid.`);
+            }   
+
+            AnimalModel.findByIdAndRemove(key).then((animal) => {
+                if(!animal) {
+                    console.log('Key not removed');
+                    reject(`Key not removed.`);
+                }
+                console.log(animal);
+                resolve(animal);
+            }).catch((err) => {
+                console.log(err);
+                reject(err);
+            });
+        } catch(e) {
+            console.log(e);
+            reject(`Error destroying Animal ${key}.`);
+        }
+    });
+};
+
+exports.keylist = function() { 
+    return new Promise((resolve, reject) => {
+        AnimalModel.find().distinct('_id').then((animalIds) => {
+            resolve(animalIds);
+        }, (err) => {
+            reject(`Error getting key list of Animals.`);
+        });
+    });
+};
+
+exports.count = function() { 
+    return new Promise((resolve, reject) => {
+        AnimalModel.count().then((count) => {
+            resolve(count);
+        }, (err) => {
+            reject(`Error getting key list of Animals.`);
+        });
+    });};
+
+exports.close = function() {};
