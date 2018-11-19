@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "MONGO_URL=mongodb://localhost/ MONGO_DBNAME=animals DEBUG=notes:* node ./bin/www"
+    "start": "MONGODB_URI=mongodb://localhost:27017/animals DEBUG=notes:* node ./bin/www"
   },
   "dependencies": {
     "cookie-parser": "~1.4.3",
@@ -12,7 +12,9 @@
     "fs-extra": "^7.0.1",
     "hbs": "~4.0.1",
     "http-errors": "~1.6.2",
+    "lodash": "^4.17.11",
     "mongodb": "^3.1.10",
+    "mongoose": "^5.3.12",
     "morgan": "~1.9.0"
   }
 }
