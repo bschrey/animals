@@ -1,5 +1,4 @@
 const {ObjectID} = require('mongodb');
-const _ = require('lodash');
 
 const {mongoose} = require('../db/mongoose');
 const {AnimalModel} = require('./animal-mongoose-model');
