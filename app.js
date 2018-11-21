@@ -1,6 +1,5 @@
 const createError = require('http-errors');
 const express = require('express');
-const path = require('path');
 const logger = require('morgan');
 
 const indexRouter = require('./routes/index');
@@ -9,10 +8,13 @@ const animalsRouter = require('./routes/animals');
 const app = express();
 
 app.use(logger('dev'));
+
 app.use(express.json());
+
 app.use(express.urlencoded({ extended: false }));
 
 app.use('/', indexRouter);
+
 app.use('/v1/animals', animalsRouter);
 
 // catch 404 and forward to error handler
