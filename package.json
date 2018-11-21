@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "MONGODB_URI=mongodb://localhost:27017/animals DEBUG=notes:* node ./bin/www"
+    "start": "PORT=3000 MONGODB_URI=mongodb://localhost:27017/animals DEBUG=notes:* node ./bin/www"
   },
   "dependencies": {
     "cookie-parser": "~1.4.3",
