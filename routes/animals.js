@@ -31,7 +31,7 @@ router.get('/:key', async (req, res, next) => {
 
 router.post('/', async (req, res, next) => {
     try {
-		let animal = await animals.create(req.body.key, req.body.name, req.body.type, req.body.weight, req.body.status);
+		let animal = await animals.create(req.body.key, req.body.name, req.body.type, req.body.weight);
 		console.log(JSON.stringify(animal));
 		res.status(200).json(JSON.stringify(animal));
 	} catch(e) {
@@ -42,7 +42,7 @@ router.post('/', async (req, res, next) => {
 
 router.put('/', async (req, res, next) => {
     try {
-		let animal = await animals.update(req.body.key, req.body.name, req.body.type, req.body.weight, req.body.status);
+		let animal = await animals.update(req.body.key, req.body.name, req.body.type, req.body.weight);
 		console.log(JSON.stringify(animal));
 		res.status(200).json(JSON.stringify(animal));
 	} catch(e) {

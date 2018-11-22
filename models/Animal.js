@@ -2,7 +2,6 @@ const _animal_key = Symbol('key');
 const _animal_name = Symbol('name');
 const _animal_type = Symbol('type');
 const _animal_weight = Symbol('weight');
-const _animal_status = Symbol('status');
 
 module.exports = class Animal {
 	constructor(key, name, type, weight, status) {
@@ -10,7 +9,6 @@ module.exports = class Animal {
 		this[_animal_name] = name;
 		this[_animal_type] = type;
 		this[_animal_weight] = weight;
-		this[_animal_status] = status;
 	}
 
 	get key() {return this[_animal_key]; }
@@ -25,17 +23,14 @@ module.exports = class Animal {
 	get weight() {return this[_animal_weight]; }
 	set weight(newWeight) { this[_animal_weight] = newWeight; }
 
-	get status() {return this[_animal_status]; }
-	set status(newStatus) { this[_animal_status] = newStatus; }
-
 	toJSON() {
-		let {key, name, type, weight, status} = this;
-		return {key, name, type, weight, status};
+		let {key, name, type, weight} = this;
+		return {key, name, type, weight};
 	}
 
 	static fromJSON(json) {
 		var data = JSON.parse(json);
-		var animal = new Animal(data.key, data.name, data.type, data.weight, data.status);
+		var animal = new Animal(data.key, data.name, data.type, data.weight);
 		return animal;
 	}
 

@@ -4,19 +4,18 @@ const {mongoose} = require('../db/mongoose');
 const {AnimalModel} = require('./animal-mongoose-model');
 const Animal = require("./Animal");
 
-exports.create = function(key, name, type, weight, status) { 
+exports.create = function(key, name, type, weight) { 
     return new Promise((resolve, reject) => {
         try {
             let animalModel = new AnimalModel({
                 name, name,
                 type: type,
-                weight: weight,
-                status: status
+                weight: weight
             });
 
             animalModel.save().then((doc) => {
                 console.log(doc);
-                let animal = new Animal(doc._id, doc.name, doc.type, doc.weight, doc.status);
+                let animal = new Animal(doc._id, doc.name, doc.type, doc.weight);
                 console.log(animal);
                 resolve(animal);
             }, (err) => {
@@ -30,7 +29,7 @@ exports.create = function(key, name, type, weight, status) {
     });
 };
  
-exports.update = function(key, name, type, weight, status) {  
+exports.update = function(key, name, type, weight) {  
     return new Promise((resolve, reject) => {
         try {
             if(!ObjectID.isValid(key)) {
@@ -39,7 +38,7 @@ exports.update = function(key, name, type, weight, status) {
             }   
 
             AnimalModel.findByIdAndUpdate(key,
-                {$set: {name: name, type: type, weight: weight, status: status }}, {new: true}).then((animal) => {
+                {$set: {name: name, type: type, weight: weight }}, {new: true}).then((animal) => {
                     if(!animal) {
                         reject(`Animal not found with key ${key}.`);
                     }
@@ -69,7 +68,7 @@ exports.read = function(key) {
                     resolve(null);
                 }
 
-                let animal = new Animal(doc._id, doc.name, doc.type, doc.weight, doc.status);
+                let animal = new Animal(doc._id, doc.name, doc.type, doc.weight);
                 resolve(animal);
 
             }).catch((err) => {

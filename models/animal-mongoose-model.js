@@ -16,10 +16,6 @@ const AnimalSchema = mongoose.Schema({
 	weight: {
 		type: Number,
 		default: null
-	},
-	status: {
-		type: String,
-		default: null
 	}
 }, {
     timestamps: true

@@ -2,9 +2,9 @@ const Animal = require('./Animal');
 
 let animals = [];
 
-exports.update = exports.create = async function(key, name, type, weight, status) {
+exports.update = exports.create = async function(key, name, type, weight) {
 	try {
-		animals[key] = new Animal(key, name, type, weight, status);
+		animals[key] = new Animal(key, name, type, weight);
 		return animals[key];
 	} catch(e) {
 		console.log(e);
