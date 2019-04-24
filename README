@@ -1,0 +1,4 @@
+docker run -d -p 3000:3000 --network hssi-backend --name hssi-animals bschrey/hssi-animals:1.0.0
+
+docker start hssi-animals
+docker stop hssi-animals

@@ -6,8 +6,10 @@ const Animal = require('../models/Animal.js');
 /* GET users listing. */
 router.get('/', async (req, res, next) => {
     try {
-	  	let allAnimals = await animals.keylist();
-	  	res.status(200).json(JSON.stringify(allAnimals));
+	  	let allAnimalIds = await animals.keylist();
+	  	let allAnimals = {};
+	  	allAnimals.ids = allAnimalIds;
+	  	res.status(200).json(allAnimals);
 	} catch(e) {
 		console.log(e);
 		res.status(500).send({"error": "server error"});
@@ -19,7 +21,7 @@ router.get('/:key', async (req, res, next) => {
 	  	let animal = await animals.read(req.params.key);
 	  	console.log(JSON.stringify(animal));
 	  	if(animal) {
-			res.status(200).send(JSON.stringify(animal));
+			res.status(200).send(animal);
 	  	} else {
 	  		res.status(400).send({"error": "not found"});
 	  	}
@@ -33,7 +35,7 @@ router.post('/', async (req, res, next) => {
     try {
 		let animal = await animals.create(req.body.key, req.body.name, req.body.type, req.body.weight);
 		console.log(JSON.stringify(animal));
-		res.status(200).json(JSON.stringify(animal));
+		res.status(200).json(animal);
 	} catch(e) {
 		console.log(e);
 		res.status(500).send({"error": "server error"});
@@ -44,7 +46,7 @@ router.put('/', async (req, res, next) => {
     try {
 		let animal = await animals.update(req.body.key, req.body.name, req.body.type, req.body.weight);
 		console.log(JSON.stringify(animal));
-		res.status(200).json(JSON.stringify(animal));
+		res.status(200).json(animal);
 	} catch(e) {
 		console.log(e);
 		res.status(500).send({"error": "server error"});
@@ -56,7 +58,7 @@ router.delete('/:key', async (req, res, next) => {
 	  	let animal = await animals.destroy(req.params.key);
 	  	console.log(JSON.stringify(animal));
 	  	if(animal) {
-			res.status(200).send(JSON.stringify(animal));
+			res.status(200).send(animal);
 	  	} else {
 	  		res.status(400).send({"error": "not found"});
 	  	}

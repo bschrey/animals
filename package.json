@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "PORT=3000 MONGODB_URI=mongodb://localhost:27017/animals DEBUG=notes:* node ./bin/www"
+    "start": "PORT=3000 MONGODB_URI=mongodb://localhost:27017/animals DEBUG=notes:* node ./bin/www",
+    "docker": "node ./bin/www"
   },
   "repository": {
     "type": "git",
@@ -16,6 +17,7 @@
   },
   "homepage": "https://github.com/bschrey/hssi-animals#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "~4.16.0",
     "http-errors": "~1.6.2",
     "mongodb": "^3.1.10",
